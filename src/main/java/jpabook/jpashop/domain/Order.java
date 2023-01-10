@@ -23,10 +23,11 @@ public class Order {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @OneToMany(mappedBy = "order") //XXXToMany는 기본 FetchType이 Lazy
+    //XXXToMany는 기본 FetchType이 Lazy
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderItem> orderItems = new ArrayList<>();
 
-    @OneToOne(fetch = LAZY)
+    @OneToOne(fetch = LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "delivery_id") //주인
     private Delivery delivery;
 
@@ -34,4 +35,20 @@ public class Order {
 
     @Enumerated(EnumType.STRING) //EnumType.ORDINARY가 디폴트인데 절대 쓰지 말 것!! 중간에 다른거 끼면 골치아픔
     private OrderStatus status; //주문상태 [ORDER, CANCEL]을 뜻하는 enum
+
+    //==연관관계 편의 메소드==// -> 컨트롤하는 쪽이 들고 있는게 좋음!
+    public void setMember(Member member) {
+        this.member = member;
+        member.getOrders().add(this);
+    }
+
+    public void addOrderItem(OrderItem orderItem) {
+        orderItems.add(orderItem);
+        orderItem.setOrder(this);
+    }
+
+    public void setDelivery(Delivery delivery) {
+        this.delivery = delivery;
+        delivery.setOrder(this);
+    }
 }
