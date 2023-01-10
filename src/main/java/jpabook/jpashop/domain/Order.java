@@ -8,6 +8,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import static jakarta.persistence.FetchType.*;
+
 @Entity
 @Table(name = "orders")
 @Getter @Setter
@@ -17,14 +19,14 @@ public class Order {
     @Column(name = "order_id")
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = LAZY) //XXXToOne은 기본 FetchType이 EAGER이므로 직접 바꿔주기
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @OneToMany(mappedBy = "order")
+    @OneToMany(mappedBy = "order") //XXXToMany는 기본 FetchType이 Lazy
     private List<OrderItem> orderItems = new ArrayList<>();
 
-    @OneToOne
+    @OneToOne(fetch = LAZY)
     @JoinColumn(name = "delivery_id") //주인
     private Delivery delivery;
 
