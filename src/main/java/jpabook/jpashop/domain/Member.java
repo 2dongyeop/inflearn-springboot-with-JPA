@@ -15,7 +15,7 @@ public class Member {
     @Column(name = "member_id")
     private Long id;
 
-    private String name;
+    private String name; //Unique로 설정해보기
 
     @Embedded //내장된
     private Address address;
