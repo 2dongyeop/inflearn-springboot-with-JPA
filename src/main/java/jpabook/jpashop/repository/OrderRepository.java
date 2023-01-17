@@ -22,7 +22,7 @@ public class OrderRepository {
     }
 
     /**
-     * 검색 기능 - 추후에 생성 예정
+     * 검색 기능 - 추후에 생성 예정기
      */
 //    public List<Order> findAll(OrderSerach orderSerach) {
 //
