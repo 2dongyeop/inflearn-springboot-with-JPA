@@ -28,6 +28,12 @@ public class OrderRepository {
 
     /**
      * 검색 기능
+     * Querydsl를 이용 → 권장 방법!!
+     */
+//    public List<Order> findAll(OrderSearch orderSearch) {}
+    
+
+    /**
      * 동적 쿼리가 아닌 직접 쿼리 작성하는 방식 : 권장x
      */
     public List<Order> findAllByString(OrderSearch orderSearch) {
