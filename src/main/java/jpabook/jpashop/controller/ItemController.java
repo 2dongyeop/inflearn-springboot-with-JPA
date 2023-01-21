@@ -67,9 +67,10 @@ public class ItemController {
     }
 
     @PostMapping("/items/{itemId}/edit")
-    public String updateItem(@PathVariable String itemId, @ModelAttribute("form") BookForm form) {
+    public String updateItem(@PathVariable Long itemId, @ModelAttribute("form") BookForm form) {
 
         Book book = new Book();
+        //book은 준영속 상태이므로 변경이 저장이 안됨
         book.setId(form.getId());
         book.setName(form.getName());
         book.setPrice(form.getPrice());
@@ -77,6 +78,7 @@ public class ItemController {
         book.setAuthor(form.getAuthor());
         book.setIsbn(form.getIsbn());
 
+        //따라서 직접 save 호출해야함.
         itemService.saveItem(book);
         return "redirect:/items";
     }
