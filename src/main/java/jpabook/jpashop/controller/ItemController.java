@@ -30,11 +30,7 @@ public class ItemController {
         //책 생성
         //아래처럼 setter를 만들지 말고, 생성메서드를 만들자.
         Book book = new Book();
-        book.setName(form.getName());
-        book.setPrice(form.getPrice());
-        book.setStockQuantity(form.getStockQuantity());
-        book.setAuthor(form.getAuthor());
-        book.setIsbn(form.getIsbn());
+        book.change(form);
 
         //저장
         itemService.saveItem(book);
@@ -51,25 +47,21 @@ public class ItemController {
     @GetMapping("/items/{itemId}/edit")
     public String updateItemForm(@PathVariable("itemId") Long itemId, Model model) {
         //예제에선 책만 가져온다고 가정하여 Book으로 받음
-        //casting이 좋은건 아님
         Book item = (Book) itemService.findOne(itemId);
 
         BookForm form = new BookForm();
-        form.setId(item.getId());
-        form.setName(item.getName());
-        form.setPrice(item.getPrice());
-        form.setStockQuantity(item.getStockQuantity());
-        form.setAuthor(item.getAuthor());
-        form.setIsbn(item.getIsbn());
+        form.change(item);
 
         model.addAttribute("form", form);
         return "items/updateItemForm";
     }
 
+    /**
+     * 상품 수정
+     */
     @PostMapping("/items/{itemId}/edit")
     public String updateItem(@PathVariable Long itemId, @ModelAttribute("form") BookForm form) {
 
-        //아래의 경우와 달리, 가져올 파라미터(값)가 많으면 Service계층에 DTO만들기
         itemService.updateItem(itemId, form.getName(), form.getPrice(), form.getStockQuantity());
         return "redirect:/items";
     }

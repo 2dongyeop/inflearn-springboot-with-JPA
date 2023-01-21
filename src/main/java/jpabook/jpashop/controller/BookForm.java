@@ -1,5 +1,6 @@
 package jpabook.jpashop.controller;
 
+import jpabook.jpashop.domain.item.Book;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,4 +17,13 @@ public class BookForm {
     //Book만 해당하는 속성
     private String author;
     private String isbn;
+
+    public void change(Book item) {
+        this.id = item.getId();
+        this.name = item.getName();
+        this.price = item.getPrice();
+        this.stockQuantity = item.getStockQuantity();
+        this.author = item.getAuthor();
+        this.isbn = item.getIsbn();
+    }
 }

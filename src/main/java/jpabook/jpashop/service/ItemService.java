@@ -1,6 +1,5 @@
 package jpabook.jpashop.service;
 
-import jpabook.jpashop.domain.item.Book;
 import jpabook.jpashop.domain.item.Item;
 import jpabook.jpashop.repository.ItemRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,17 +20,17 @@ public class ItemService {
         itemRepository.save(item);
     }
 
+    /**
+     * 영속성 컨텍스트가 자동 변경
+     * findItem 자체가 repo에서 찾아온 영속성 객체
+     * 따라서 itemRepository.save(findItem);를 안해도 반영됨.
+     * @Transactional이 commit을 함 (변경사항들을 flush)
+     */
     @Transactional
     public void updateItem(Long itemId, String name, int price, int stockQuantity) {
         Item findItem = itemRepository.findOne(itemId);
-        findItem.setName(name);
-        findItem.setPrice(price);
-        findItem.setStockQuantity(stockQuantity);
-        //기타 등등 나머지 필드도 채웠다고 가정
 
-        //findItem 자체가 repo에서 찾아온 영속성 객체
-        //따라서 itemRepository.save(findItem);를 안해도 반영됨.
-        //@Transactional이 commit을 함 (변경사항들을 flush)
+        findItem.change(name, price, stockQuantity);
     }
 
     public List<Item> findItems() {
