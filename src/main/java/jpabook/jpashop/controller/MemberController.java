@@ -11,6 +11,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import java.util.List;
+
 @Controller
 @RequiredArgsConstructor
 public class MemberController {
@@ -38,5 +40,15 @@ public class MemberController {
 
         memberService.join(member); //저장
         return "redirect:/"; //저장이 끝나면 홈으로 이동
+    }
+
+    @GetMapping("/members")
+    public String list(Model model) {
+        //사실 조회에도 아래처럼 Member 엔티티를 직접 사용하기보단
+        //DTO를 사용하는게 좋음!
+        //나중에 말하겠지만 API를 만들땐, 절대 엔티티를 외부로 반환하지 말것.
+        List<Member> members = memberService.findMembers();
+        model.addAttribute("members", members);
+        return "members/memberList";
     }
 }
