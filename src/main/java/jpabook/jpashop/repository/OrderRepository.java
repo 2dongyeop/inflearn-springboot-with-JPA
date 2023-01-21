@@ -36,14 +36,14 @@ public class OrderRepository {
      * 동적 쿼리가 아닌 직접 쿼리 작성하는 방식 : 권장x
      */
     public List<Order> findAllByString(OrderSearch orderSearch) {
-
+        //language = JPQL
         String jpql = "select o from Order o join o.member m";
         boolean isFirstCondition = true;
 
         //주문 상태 검색
         if (orderSearch.getOrderStatus() != null) {
             if (isFirstCondition) {
-                jpql += "where";
+                jpql += " where";
                 isFirstCondition = false;
             } else {
                 jpql += " and";
