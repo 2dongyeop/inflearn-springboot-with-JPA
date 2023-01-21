@@ -69,17 +69,8 @@ public class ItemController {
     @PostMapping("/items/{itemId}/edit")
     public String updateItem(@PathVariable Long itemId, @ModelAttribute("form") BookForm form) {
 
-        Book book = new Book();
-        //book은 준영속 상태이므로 변경이 저장이 안됨
-        book.setId(form.getId());
-        book.setName(form.getName());
-        book.setPrice(form.getPrice());
-        book.setStockQuantity(form.getStockQuantity());
-        book.setAuthor(form.getAuthor());
-        book.setIsbn(form.getIsbn());
-
-        //따라서 직접 save 호출해야함.
-        itemService.saveItem(book);
+        //아래의 경우와 달리, 가져올 파라미터(값)가 많으면 Service계층에 DTO만들기
+        itemService.updateItem(itemId, form.getName(), form.getPrice(), form.getStockQuantity());
         return "redirect:/items";
     }
 }
