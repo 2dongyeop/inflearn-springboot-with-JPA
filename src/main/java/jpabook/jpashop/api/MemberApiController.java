@@ -9,6 +9,8 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 public class MemberApiController {
@@ -16,7 +18,24 @@ public class MemberApiController {
     private final MemberService memberService;
 
     /**
-     * v1 : 요청 값으로 Member 엔티티를 직접 받는다.
+     * 회원 조회 v1 : 응답 값으로 엔티티를 직접 외부에 노출
+     * 문제점 :
+     * - 엔티티에 프레젠테이션 계층을 위한 로직이 추가됨
+     * - 기본적으로 엔티티의 모든 값이 노출됨.
+     * - 응답 스펙을 맞추기 위해 로직이 추가됨 (@JsonIgnore, 별도의 뷰 로직 등등)
+     * - 컬렉션을 직접 반환하면 향후 API 스펙을 변경하기 어렵다!
+     *
+     * 결론 :
+     * - API 응답 스펙에 맞추어 별도의 DTO를 반환하자.
+     */
+    @GetMapping("/api/v1/members")
+    public List<Member> membersV1() {
+        return memberService.findMembers();
+    }
+    
+
+    /**
+     * 회원 등록 v1 : 요청 값으로 Member 엔티티를 직접 받는다.
      * 문제점 :
      * - 엔티티에 프레젠테이션 계층을 위한 로직이 추가됨.
      * - 엔티티에 API 검증을 위한 로직이 들어감 (@NotEmpty 등등)
@@ -35,7 +54,7 @@ public class MemberApiController {
     }
 
     /**
-     * v2 : 요청 값으로 Member 엔티티 대신에 별도의 DTO를 받는다.
+     * 회원 등록 v2 : 요청 값으로 Member 엔티티 대신에 별도의 DTO를 받는다.
      * 장점 :
      * - 엔티티와 프레젠테이션 계층을 위한 로직을 분리할 수 있다.
      * - 엔티티와 API 스펙을 명확하게 분리할 수 있다.
@@ -56,7 +75,7 @@ public class MemberApiController {
     /**
      * 회원 수정 API
      */
-    @PutMapping("/api/v2/members/{id}")
+    @PutMapping("/api/v2/members/{id}") //부분 업데이트를 할거면 PATCH가 적합!
     public UpdateMemberResponse updateMemberV2(
             @PathVariable("id") Long id,
             @RequestBody @Valid UpdateMemberRequest request) {
