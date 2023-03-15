@@ -1,5 +1,6 @@
 package jpabook.jpashop.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;
@@ -27,6 +28,7 @@ public class Member {
      * 아래의 orders는 Order 테이블에 있는 member 필더와 연관관계를 가짐.
      * 얜 주인이 아닌, 따라오는 거울 역할
      */
+    @JsonIgnore
     @OneToMany(mappedBy = "member")
     private List<Order> orders = new ArrayList<>();
 }
