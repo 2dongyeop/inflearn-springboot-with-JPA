@@ -5,6 +5,7 @@ import jpabook.jpashop.domain.Order;
 import jpabook.jpashop.domain.OrderStatus;
 import jpabook.jpashop.repository.OrderRepository;
 import jpabook.jpashop.repository.OrderSearch;
+import jpabook.jpashop.repository.order.simplequery.OrderSimpleQueryRepository;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +27,7 @@ import java.util.stream.Collectors;
 public class OrderSimpleApiController {
 
     private final OrderRepository orderRepository;
+    private final OrderSimpleQueryRepository orderSimpleQueryRepository;
 
     /*
      * 주문 조회 V1 : 엔티티 직접 노출
@@ -75,6 +77,19 @@ public class OrderSimpleApiController {
                 .collect(Collectors.toList());
 
         return new Result(orderDtoList);
+    }
+
+
+    /*
+     * V4. JPA에서 DTO로 바로 조회
+     * - 쿼리1번 호출
+     * - select 절에서 원하는 데이터만 선택해서 조회
+     * - SELECT 절에서 원하는 데이터를 직접 선택하므로 DB 애플리케이션 네트웍 용량 최적화(생각보다 미비)
+     * - 단, 재사용성이 떨어,  API 스펙에 맞춘 코드가 리포지토리에 들어가는 단점
+     */
+    @GetMapping("/api/v4/simple-orders")
+    public Result ordersV4() {
+        return new Result(orderSimpleQueryRepository.findOrderDtos());
     }
 
 
