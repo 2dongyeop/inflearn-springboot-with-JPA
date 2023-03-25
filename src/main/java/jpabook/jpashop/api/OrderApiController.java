@@ -6,6 +6,8 @@ import jpabook.jpashop.domain.OrderItem;
 import jpabook.jpashop.domain.OrderStatus;
 import jpabook.jpashop.repository.OrderRepository;
 import jpabook.jpashop.repository.OrderSearch;
+import jpabook.jpashop.repository.order.query.OrderQueryDto;
+import jpabook.jpashop.repository.order.query.OrderQueryRepository;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,6 +23,7 @@ import java.util.stream.Collectors;
 public class OrderApiController {
 
     private final OrderRepository orderRepository;
+    private final OrderQueryRepository orderQueryRepository;
 
     /*
      * V1. 엔티티 직접 노출
@@ -74,6 +77,15 @@ public class OrderApiController {
     }
 
 
+    /*
+    * V3. 엔티티를 DTO로 변환 - 페이징과 한계 돌파
+    * - 컬렉션을 페치 조인하면 페이징이 불가능하다!
+    *
+    * 해결책
+    * - 먼저 (OneToOne, ManyToOne) 관계를 모두 페치조인한다! -> 페이징에 영향x
+    * - 컬렉션은 지연 로딩으로 조회한다.
+    * - 지연 로딩 성능 최적화를 위해 `default_batch_fetch_size`를 적용하자 -> IN 쿼리 조회
+    */
     @GetMapping("/api/v3.1/orders")
     public List<OrderDto> ordersV3_page(
             @RequestParam(value = "offset", defaultValue = "0") int offset,
@@ -88,6 +100,10 @@ public class OrderApiController {
 
 
 
+    @GetMapping("/api/v4/orders")
+    public List<OrderQueryDto> ordersV4() {
+        return orderQueryRepository.findOrderQueryDtos();
+    }
 
     @Getter
     static class OrderDto {
