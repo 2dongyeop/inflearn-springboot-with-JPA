@@ -109,28 +109,42 @@ public class OrderRepository {
 
     public List<Order> findAllByMemberDelivery() {
 
-        return em.createQuery("select o from Order o join fetch o.member m join fetch o.delivery d", Order.class)
+        return em.createQuery(
+                        "select o from Order o" +
+                                " join fetch o.member m" +
+                                " join fetch o.delivery d", Order.class)
                 .getResultList();
     }
 
     public List<Order> findAllWithItem() {
 
         /*
-        * distinct는 1대다 조인으로 인해 증가하는 row를 중복을 걸러줌!
-        * 그리고 추가로, 같은 엔티티가 조회되면(id가 같다면) 중복을 제거!
-        *
-        * 단점
-        * - 페이징이 불가능하다. -> 페이징을 하게 되면  메모리에서 페이징을 해버리는데,
-        *   - 이는 매우 위험!!!!! 절대 쓰지 말자.
-        * - 또한 페치 조인은 1개만 사용할 수 있다.
-        *   - 1대 다대 다에 쓰게 되면 난리난다.
-        * */
+         * distinct는 1대다 조인으로 인해 증가하는 row를 중복을 걸러줌!
+         * 그리고 추가로, 같은 엔티티가 조회되면(id가 같다면) 중복을 제거!
+         *
+         * 단점
+         * - 페이징이 불가능하다. -> 페이징을 하게 되면  메모리에서 페이징을 해버리는데,
+         *   - 이는 매우 위험!!!!! 절대 쓰지 말자.
+         * - 또한 페치 조인은 1개만 사용할 수 있다.
+         *   - 1대 다대 다에 쓰게 되면 난리난다.
+         * */
         return em.createQuery(
-                "select distinct o from Order o" +
-                        " join fetch o.member m" +
-                        " join fetch o.delivery d" +
-                        " join fetch o.orderItems oi" +
-                        " join fetch oi.item i", Order.class)
+                        "select distinct o from Order o" +
+                                " join fetch o.member m" +
+                                " join fetch o.delivery d" +
+                                " join fetch o.orderItems oi" +
+                                " join fetch oi.item i", Order.class)
+                .getResultList();
+    }
+
+    public List<Order> findAllByMemberDelivery(int offset, int limit) {
+
+        return em.createQuery(
+                        "select o from Order o" +
+                                " join fetch o.member m" +
+                                " join fetch o.delivery d", Order.class)
+                .setFirstResult(offset)
+                .setMaxResults(limit)
                 .getResultList();
     }
 }
