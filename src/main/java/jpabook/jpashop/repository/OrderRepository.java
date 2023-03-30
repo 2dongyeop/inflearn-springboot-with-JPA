@@ -1,13 +1,12 @@
 package jpabook.jpashop.repository;
 
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.*;
-import jpabook.jpashop.domain.Member;
+import jpabook.jpashop.domain.*;
 import jpabook.jpashop.domain.Order;
-import jpabook.jpashop.domain.OrderStatus;
-import jpabook.jpashop.repository.order.simplequery.OrderSimpleQueryDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
@@ -15,11 +14,16 @@ import org.springframework.util.StringUtils;
 import java.util.ArrayList;
 import java.util.List;
 
+
+import static jpabook.jpashop.domain.QMember.member;
+import static jpabook.jpashop.domain.QOrder.order;
+
 @Repository
 @RequiredArgsConstructor
 public class OrderRepository {
 
     private final EntityManager em;
+    private final JPAQueryFactory query;
 
     public void save(Order order) {
         em.persist(order);
@@ -45,7 +49,7 @@ public class OrderRepository {
                 .fetch();
     }
 
-    private BooleanExpre`ssion statusEq(OrderStatus statusCond) {
+    private BooleanExpression statusEq(OrderStatus statusCond) {
         if (statusCond == null) {
             return null;
         }
